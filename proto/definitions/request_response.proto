@@ -1,0 +1,389 @@
+syntax = "proto3";
+
+import "message.proto";
+import "blocks.proto";
+
+message SubmitMessageRequest {
+  Message message = 1;
+}
+
+message SubmitMessageResponse {
+  bytes hash = 1;
+  bool accepted = 2;
+  string error = 3;
+}
+
+message BatchSubmitRequest {
+  repeated Message messages = 1;
+}
+
+message BatchSubmitResult {
+  bytes hash = 1;
+  bool accepted = 2;
+  string error = 3;
+}
+
+message BatchSubmitResponse {
+  repeated BatchSubmitResult results = 1;
+  uint32 accepted_count = 2;
+  uint32 rejected_count = 3;
+}
+
+message GetDatasetRequest {
+  bytes dataset_id = 1;
+}
+
+message GetDatasetResponse {
+  bytes dataset_id = 1;
+  string name = 2;
+  string description = 3;
+  string license = 4;
+  Visibility visibility = 5;
+  string status = 6;
+  uint32 collaborator_count = 7;
+  uint32 contribution_count = 8;
+  uint32 max_collaborators = 9;
+  uint32 max_contributions = 10;
+  bytes owner_address = 11;
+}
+
+message GetDatasetByNameRequest {
+  string name = 1;
+  bytes owner_address = 2;
+}
+
+message SearchDatasetsRequest {
+  string query = 1;
+  uint32 limit = 2;
+  bytes cursor = 3;
+  bytes owner_address = 4;
+}
+
+message GetDatasetActivityRequest {
+  bytes dataset_id = 1;
+  uint32 limit = 2;
+  repeated MessageType types = 3;
+}
+
+message GetDatasetActivityResponse {
+  repeated MessageEntry messages = 1;
+}
+
+message ListDatasetsRequest {
+  uint32 limit = 1;
+  bytes cursor = 2;
+  bytes owner_address = 3;
+}
+
+message ListDatasetsResponse {
+  repeated GetDatasetResponse datasets = 1;
+  bytes next_cursor = 2;
+}
+
+message GetContributionRequest {
+  bytes dataset_id = 1;
+  bytes contribution_hash = 2;
+}
+
+message GetContributionResponse {
+  bytes dataset_id = 1;
+  ContributionMeta contribution = 2;
+  bytes content_digest = 3;
+  string url = 4;
+}
+
+message ListContributionsRequest {
+  bytes dataset_id = 1;
+  uint32 limit = 2;
+  bytes cursor = 3;
+}
+
+message ListContributionsResponse {
+  repeated GetContributionResponse contributions = 1;
+  bytes next_cursor = 2;
+}
+
+message ListCollaboratorsRequest {
+  bytes dataset_id = 1;
+  uint32 limit = 2;
+  bytes cursor = 3;
+}
+
+message CollaboratorEntry {
+  Permission permission = 1;
+  bytes owner_address = 2;
+}
+
+message ListCollaboratorsResponse {
+  repeated CollaboratorEntry collaborators = 1;
+  bytes next_cursor = 2;
+}
+
+message SearchAccountsRequest {
+  string query = 1;
+  uint32 limit = 2;
+  bytes cursor = 3;
+}
+
+message ListAccountsRequest {
+  uint32 limit = 1;
+  bytes cursor = 2;
+}
+
+message GetAccountRequest {
+  bytes owner_address = 1;
+}
+
+message GetAccountByKeyRequest {
+  bytes key = 1;
+}
+
+message GetAccountResponse {
+  string display_name = 1;
+  string avatar = 2;
+  string bio = 3;
+  string website = 4;
+  repeated KeyEntry keys = 5;
+  uint32 storage_units = 6;
+  uint32 dataset_count = 7;
+  repeated VerificationEntry verifications = 8;
+  bytes owner_address = 9;
+  uint64 custody_nonce = 10;
+  uint32 max_datasets = 11;
+  uint32 max_verifications = 12;
+  uint32 max_collaborators_per_dataset = 13;
+  string username = 14;
+  uint32 key_count = 15;
+  uint32 verification_count = 16;
+}
+
+message AccountSummary {
+  bytes owner_address = 1;
+  string username = 2;
+  string display_name = 3;
+  string avatar = 4;
+  uint32 storage_units = 5;
+  uint32 dataset_count = 6;
+  uint32 key_count = 7;
+  uint32 verification_count = 8;
+}
+
+message ListAccountsResponse {
+  repeated AccountSummary accounts = 1;
+  bytes next_cursor = 2;
+}
+
+message KeyEntry {
+  bytes key = 1;
+  KeyScope scope = 2;
+  repeated bytes allowed_datasets = 3;
+  bytes request_owner_address = 4;
+}
+
+message GetKeyRequest {
+  bytes key = 1;
+  bytes owner_address = 2;
+}
+
+message GetKeyResponse {
+  bytes key = 1;
+  KeyScope scope = 2;
+  repeated bytes allowed_datasets = 3;
+  uint32 added_at = 4;
+  bytes request_owner_address = 5;
+}
+
+message ListKeysRequest {
+  uint32 limit = 1;
+  bytes cursor = 2;
+  bytes owner_address = 3;
+}
+
+message ListKeysResponse {
+  repeated GetKeyResponse keys = 1;
+  bytes next_cursor = 2;
+}
+
+message GetAccountActivityRequest {
+  uint32 limit = 1;
+  repeated MessageType types = 2;
+  bytes owner_address = 3;
+}
+
+message GetAccountActivityResponse {
+  repeated MessageEntry messages = 1;
+}
+
+message ListVerificationsRequest {
+  uint32 limit = 1;
+  bytes cursor = 2;
+  bytes owner_address = 3;
+}
+
+message VerificationEntry {
+  VerificationType verification_type = 1;
+  bytes address = 2;
+  bytes chain_id = 3;
+  uint32 claim_key_type = 4;
+  bytes claim_block_hash = 5;
+}
+
+message ListVerificationsResponse {
+  repeated VerificationEntry verifications = 1;
+  bytes next_cursor = 2;
+}
+
+message GetBlockRequest {
+  uint64 block_number = 1;
+}
+
+message GetBlockResponse {
+  Block block = 1;
+}
+
+message ListBlocksRequest {
+  uint64 start = 1;
+  uint32 limit = 2;
+}
+
+message ListBlocksResponse {
+  repeated GetBlockResponse blocks = 1;
+  uint64 latest_block = 2;
+}
+
+message GetMessageRequest {
+  bytes hash = 1;
+}
+
+message GetMessageResponse {
+  Message message = 1;
+  uint64 block_number = 2;
+}
+
+message ListMessagesRequest {
+  uint64 start_block = 1;
+  uint64 end_block = 2;
+  uint32 limit = 3;
+  repeated MessageType types = 4;
+}
+
+message MessageEntry {
+  Message message = 1;
+  uint64 block_number = 2;
+}
+
+message ListMessagesResponse {
+  repeated MessageEntry messages = 1;
+  uint64 start_block = 2;
+  uint64 end_block = 3;
+}
+
+message GetSnapshotInfoRequest {}
+
+message GetSnapshotInfoResponse {
+  uint64 block_number = 1;
+  bytes state_root = 2;
+  uint32 entry_count = 3;
+  uint64 estimated_size_bytes = 4;
+}
+
+message GetNodeStatusRequest {}
+
+enum ReplayVerificationStatus {
+  REPLAY_VERIFICATION_STATUS_UNSPECIFIED = 0;
+  REPLAY_VERIFICATION_STATUS_VERIFIED = 1;
+  REPLAY_VERIFICATION_STATUS_TRUSTED_SNAPSHOT = 2;
+  REPLAY_VERIFICATION_STATUS_BLOCKED_WAITING_EXTERNAL_EVIDENCE = 3;
+}
+
+message ReplayVerificationInfo {
+  ReplayVerificationStatus status = 1;
+  string detail = 2;
+  uint64 blocked_block_number = 3;
+  bool waiting_on_external_evidence = 4;
+}
+
+message GetNodeStatusResponse {
+  uint64 current_block = 1;
+  uint32 mempool_size = 2;
+  uint32 pending_blocks = 3;
+  Network network = 4;
+  string version = 5;
+  uint64 uptime_secs = 6;
+  uint64 total_messages = 7;
+  uint32 state_entries = 8;
+  ReplayVerificationInfo replay_verification = 9;
+}
+
+message GetChainStatsRequest {}
+
+message GetChainStatsResponse {
+  uint64 block_height = 1;
+  uint64 total_messages = 2;
+  uint32 total_datasets = 3;
+  uint32 total_accounts = 4;
+  uint32 total_contributions = 5;
+  uint32 total_collaborators = 6;
+  uint32 total_keys = 7;
+  uint32 total_verifications = 8;
+  uint32 state_entries = 9;
+}
+
+message SubscribeRequest {
+  bytes dataset_id = 1;
+  repeated MessageType types = 2;
+}
+
+message SubscribeBlocksRequest {}
+
+message GetMempoolInfoRequest {}
+
+message MempoolTypeCount {
+  MessageType message_type = 1;
+  uint32 count = 2;
+}
+
+message GetMempoolInfoResponse {
+  uint32 total = 1;
+  uint32 capacity = 2;
+  uint32 account_messages = 3;
+  uint32 dataset_messages = 4;
+  repeated MempoolTypeCount type_breakdown = 5;
+  uint32 oldest_timestamp = 6;
+  uint32 newest_timestamp = 7;
+}
+
+message GetHealthRequest {}
+
+message GetHealthResponse {
+  bool serving = 1;
+  bool ready = 2;
+  uint64 current_block = 3;
+  uint64 uptime_secs = 4;
+  ReplayVerificationInfo replay_verification = 5;
+}
+
+message DryRunMessageRequest {
+  Message message = 1;
+}
+
+message DryRunMessageResponse {
+  bool would_accept = 1;
+  string error = 2;
+  string error_stage = 3;
+}
+
+message ContactInfoBody {
+  string gossip_address = 1;
+  bytes peer_id = 2;
+  string version = 3;
+  Network network = 4;
+  uint64 timestamp = 5;
+  string announce_rpc_address = 6;
+}
+
+message GetConnectedPeersRequest {}
+
+message GetConnectedPeersResponse {
+  repeated ContactInfoBody contacts = 1;
+}

@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+import "message.proto";
+import "request_response.proto";
+
+service HubService {
+  rpc SubmitMessage(SubmitMessageRequest) returns (SubmitMessageResponse);
+  rpc BatchSubmitMessages(BatchSubmitRequest) returns (BatchSubmitResponse);
+
+  rpc GetDataset(GetDatasetRequest) returns (GetDatasetResponse);
+  rpc GetDatasetByName(GetDatasetByNameRequest) returns (GetDatasetResponse);
+  rpc SearchDatasets(SearchDatasetsRequest) returns (ListDatasetsResponse);
+  rpc ListDatasets(ListDatasetsRequest) returns (ListDatasetsResponse);
+  rpc GetDatasetActivity(GetDatasetActivityRequest) returns (GetDatasetActivityResponse);
+
+  rpc GetContribution(GetContributionRequest) returns (GetContributionResponse);
+  rpc ListContributions(ListContributionsRequest) returns (ListContributionsResponse);
+
+  rpc ListCollaborators(ListCollaboratorsRequest) returns (ListCollaboratorsResponse);
+
+  rpc SearchAccounts(SearchAccountsRequest) returns (ListAccountsResponse);
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse);
+  rpc GetAccountByKey(GetAccountByKeyRequest) returns (GetAccountResponse);
+  rpc GetAccountActivity(GetAccountActivityRequest) returns (GetAccountActivityResponse);
+
+  rpc GetKey(GetKeyRequest) returns (GetKeyResponse);
+  rpc ListKeys(ListKeysRequest) returns (ListKeysResponse);
+
+  rpc ListVerifications(ListVerificationsRequest) returns (ListVerificationsResponse);
+
+  rpc GetBlock(GetBlockRequest) returns (GetBlockResponse);
+  rpc ListBlocks(ListBlocksRequest) returns (ListBlocksResponse);
+
+  rpc GetMessage(GetMessageRequest) returns (GetMessageResponse);
+  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse);
+
+  rpc GetNodeStatus(GetNodeStatusRequest) returns (GetNodeStatusResponse);
+  rpc GetChainStats(GetChainStatsRequest) returns (GetChainStatsResponse);
+  rpc GetSnapshotInfo(GetSnapshotInfoRequest) returns (GetSnapshotInfoResponse);
+  rpc DryRunMessage(DryRunMessageRequest) returns (DryRunMessageResponse);
+  rpc GetMempoolInfo(GetMempoolInfoRequest) returns (GetMempoolInfoResponse);
+  rpc GetHealth(GetHealthRequest) returns (GetHealthResponse);
+
+  rpc SubscribeMessages(SubscribeRequest) returns (stream Message);
+  rpc SubscribeBlocks(SubscribeBlocksRequest) returns (stream GetBlockResponse);
+};

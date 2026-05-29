@@ -1,0 +1,221 @@
+syntax = "proto3";
+
+message Message {
+  MessageData data = 1;
+  bytes hash = 2;
+  HashScheme hash_scheme = 3;
+  bytes signature = 4;
+  SignatureScheme signature_scheme = 5;
+  bytes signer = 6;
+  optional bytes data_bytes = 7;
+}
+
+message MessageData {
+  MessageType type = 1;
+  uint32 timestamp = 2;
+  Network network = 3;
+  bytes owner_address = 4;
+  oneof body {
+    DatasetCreateBody dataset_create = 5;
+    DatasetMetadataBody dataset_metadata = 6;
+    DatasetArchiveBody dataset_archive = 7;
+    DatasetRemoveBody dataset_remove = 9;
+    ContributionBundleBody contribution_bundle = 12;
+    CollaboratorAddBody collaborator_add = 13;
+    CollaboratorRemoveBody collaborator_remove = 14;
+    AccountDataBody account_data = 15;
+    VerificationAddBody verification_add = 16;
+    VerificationRemoveBody verification_remove = 17;
+    StorageClaimBody storage_claim = 18;
+    UsernameCreateBody username_create = 19;
+    UsernameUpdateBody username_update = 20;
+    SignerAddBody signer_add = 25;
+    SignerRemoveBody signer_remove = 26;
+  }
+}
+
+enum HashScheme {
+  HASH_SCHEME_NONE = 0;
+  HASH_SCHEME_BLAKE3 = 1;
+}
+
+enum SignatureScheme {
+  SIGNATURE_SCHEME_NONE = 0;
+  SIGNATURE_SCHEME_ED25519 = 1;
+  SIGNATURE_SCHEME_EIP712 = 2;
+}
+
+enum MessageType {
+  MESSAGE_TYPE_NONE = 0;
+  MESSAGE_TYPE_DATASET_CREATE = 1;
+  MESSAGE_TYPE_DATASET_METADATA = 2;
+  MESSAGE_TYPE_DATASET_ARCHIVE = 3;
+  MESSAGE_TYPE_DATASET_REMOVE = 5;
+  MESSAGE_TYPE_SIGNER_ADD = 8;
+  MESSAGE_TYPE_SIGNER_REMOVE = 9;
+  MESSAGE_TYPE_CONTRIBUTION_BUNDLE = 10;
+  MESSAGE_TYPE_COLLABORATOR_ADD = 11;
+  MESSAGE_TYPE_COLLABORATOR_REMOVE = 12;
+  MESSAGE_TYPE_ACCOUNT_DATA = 13;
+  MESSAGE_TYPE_VERIFICATION_ADD = 14;
+  MESSAGE_TYPE_VERIFICATION_REMOVE = 15;
+  MESSAGE_TYPE_STORAGE_CLAIM = 16;
+  MESSAGE_TYPE_USERNAME_CREATE = 17;
+  MESSAGE_TYPE_USERNAME_UPDATE = 18;
+}
+
+enum Network {
+  NETWORK_NONE = 0;
+  NETWORK_MAINNET = 1;
+  NETWORK_TESTNET = 2;
+  NETWORK_DEVNET = 3;
+}
+
+message AccountDataBody {
+  AccountDataType field = 1;
+  string value = 2;
+}
+
+enum AccountDataType {
+  ACCOUNT_DATA_NONE = 0;
+  ACCOUNT_DATA_DISPLAY_NAME = 1;
+  ACCOUNT_DATA_AVATAR = 2;
+  ACCOUNT_DATA_BIO = 3;
+  ACCOUNT_DATA_WEBSITE = 4;
+}
+
+message DatasetCreateBody {
+  string name = 1;
+  Visibility visibility = 2;
+  string description = 3;
+  string license = 4;
+}
+
+message DatasetRemoveBody {
+  bytes dataset_id = 1;
+}
+
+enum Visibility {
+  VISIBILITY_PUBLIC = 0;
+  VISIBILITY_PRIVATE = 1;
+}
+
+message DatasetMetadataBody {
+  bytes dataset_id = 1;
+  DatasetMetadataType field = 2;
+  string value = 3;
+}
+
+enum DatasetMetadataType {
+  DATASET_METADATA_NONE = 0;
+  DATASET_METADATA_NAME = 1;
+  DATASET_METADATA_DESCRIPTION = 2;
+  DATASET_METADATA_LICENSE = 3;
+  DATASET_METADATA_VISIBILITY = 4;
+}
+
+message ContributionBundleBody {
+  bytes dataset_id = 1;
+  repeated ContributionMeta contributions = 2;
+  bytes content_digest = 3;
+  string url = 4;
+}
+
+message ContributionMeta {
+  bytes hash = 1;
+  repeated bytes parents = 2;
+  bytes tree_root = 3;
+  uint32 author_timestamp = 4;
+  string title = 5;
+  bytes message_hash = 6;
+  bytes author_address = 7;
+}
+
+message DatasetArchiveBody {
+  bytes dataset_id = 1;
+}
+
+message CollaboratorAddBody {
+  bytes dataset_id = 1;
+  Permission permission = 2;
+  bytes target_owner_address = 3;
+}
+
+message CollaboratorRemoveBody {
+  bytes dataset_id = 1;
+  bytes target_owner_address = 2;
+}
+
+enum Permission {
+  PERMISSION_READ = 0;
+  PERMISSION_WRITE = 1;
+  PERMISSION_ADMIN = 2;
+  PERMISSION_OWNER = 3;
+}
+
+enum KeyScope {
+  KEY_SCOPE_OWNER = 0;
+  KEY_SCOPE_SIGNING = 1;
+  KEY_SCOPE_AGENT = 2;
+}
+
+message StorageClaimBody {
+  uint32 units = 1;
+  bytes settlement_tx_hash = 2;
+  uint64 settlement_chain_id = 3;
+  uint32 settlement_log_index = 4;
+  bytes actor = 5;
+}
+
+message UsernameCreateBody {
+  string username = 1;
+}
+
+message UsernameUpdateBody {
+  string username = 1;
+}
+
+message VerificationAddBody {
+  VerificationType verification_type = 1;
+  bytes address = 2;
+  bytes claim_signature = 3;
+  bytes chain_id = 4;
+  uint32 claim_key_type = 5;
+  bytes claim_block_hash = 6;
+}
+
+message VerificationRemoveBody {
+  bytes address = 1;
+}
+
+enum VerificationType {
+  VERIFICATION_TYPE_NONE = 0;
+  VERIFICATION_TYPE_ETH_ADDRESS = 1;
+  VERIFICATION_TYPE_SOL_ADDRESS = 2;
+}
+
+message SignerAddBody {
+  bytes key = 1;
+  uint32 scope = 2;
+  bytes custody_signature = 3;
+  repeated bytes allowed_datasets = 4;
+  uint32 custody_key_type = 5;
+  uint64 nonce = 6;
+  bytes request_signature = 7;
+  uint32 request_key_type = 8;
+  uint64 valid_after = 9;
+  uint64 valid_before = 10;
+  bytes request_owner_address = 11;
+  bytes custody_block_hash = 12;
+  bytes request_block_hash = 13;
+}
+
+message SignerRemoveBody {
+  bytes key = 1;
+  bytes custody_signature = 2;
+  uint32 custody_key_type = 3;
+  uint64 nonce = 4;
+  uint64 valid_after = 5;
+  uint64 valid_before = 6;
+  bytes custody_block_hash = 7;
+}
