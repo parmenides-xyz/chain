@@ -89,11 +89,11 @@ message ConsensusMessage {
 }
 
 enum BlockEventType {
-  BLOCK_EVENT_TYPE_HEARTBEAT = 0;
+  BLOCK_EVENT_TYPE_CHECKPOINT = 0;
   BLOCK_EVENT_TYPE_MERGE_MESSAGE = 1;
 }
 
-message HeartbeatEventBody {
+message CheckpointEventBody {
 }
 
 message MergeMessageEventBody {
@@ -107,7 +107,7 @@ message BlockEventData {
   uint64 event_index = 4;
   uint64 block_timestamp = 5;
   oneof body {
-    HeartbeatEventBody heartbeat_event_body = 6;
+    CheckpointEventBody checkpoint_event_body = 6;
     MergeMessageEventBody merge_message_event_body = 7;
   };
 }
